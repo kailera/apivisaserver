@@ -39,7 +39,7 @@ exports.createIsolated = (req, res) =>{
         },
         directContacts:req.body.directContacts | null,
         initialDate: req.body.initialDate,
-        finalDate:req.body.finalDate,
+        finalDate:req.body.finalDate
     })
 
     //save a isolated:
@@ -108,20 +108,20 @@ exports.getIsolatedByName = (req, res) =>{
 
 
 exports.updateIsolated = (req, res) =>{
-    if(!req.body){
+    if (!req.body){
         const message = "Data update cannot be empty!"
         return handleError(400, message )
     }
 
     const id = req.params.id;
 
-    Isolated.findOneAndUpdate(id, req.body, {returnOriginal:false})
+    Isolated.findByIdAndUpdate(id, req.body, {useFindAndModify:false})
         .then(data =>{
             if(!data){
                 let message = "isolated with"+ {id} + " cannot be update. Maybe register is not found."
                 handleError(res, 404, message)
             }else{
-                res.status(200).send({message: "register was update successfully!" });
+                res.status(200).send({message: "register with id " + id + " was update successfully!", data });
             }
         })
         .catch(err =>{
@@ -135,7 +135,7 @@ exports.deleteIsolatedById = (req, res) =>{
 
     const id = req.params.id;
     
-    Isolated.findOneAndDelete(id)
+    Isolated.findByIdAndRemove(id)
         .then(data =>{
             if(!data){
                 let message = "Cannot delete register with id: " + id;
